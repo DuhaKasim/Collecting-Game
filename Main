@@ -1,0 +1,441 @@
+import kaboom from "kaboom";
+
+// initialize context
+kaboom();
+
+// load assets
+loadSprite("lips", "sprites/lips.png");
+loadSprite("strawberry", "sprites/strawberry.png");
+loadSprite("Blueberries", "sprites/Blueberries.png");
+loadSprite("Grapes", "sprites/Grapes.png");
+loadSprite("Watermelon", "sprites/Watermelon.png");
+loadSprite("Olive", "sprites/Olive.png");
+loadSprite("Burger", "sprites/Burger.png");
+loadSprite("Fries", "sprites/Fries.png");
+
+
+
+
+loadSound("score", "sounds/score.mp3");
+
+
+
+// define a constant
+const MOVE_SPEED = 400;
+const JUMP_FORCE = 800;
+
+
+//main scene
+scene("game", () => {
+
+    //add a black background
+    const background = add([
+		rect(width(), height()),
+		color(80, 20, 15),
+		]);
+
+
+    let time = 0
+    let score = 0
+
+    
+
+    //creates the score
+    const scorer = add([
+		text(score),
+    scale(0.5),
+		pos(width()-60, 5),
+    ]);
+
+
+    //Add timer to the game
+    action(() => {
+		time++;
+    
+    
+    });
+
+
+
+    // add a game object to screen
+    const player = add([
+      // list of components
+      sprite("lips"),
+      pos(width()/2, height()-100),
+      scale(0.2),
+      origin("center"),
+      area(),
+    ]);
+
+    //keyboard controls
+    keyDown("left", () => {
+		player.move(-MOVE_SPEED, 0);
+	  });
+
+	  keyDown("right", () => {
+		player.move(MOVE_SPEED, 0);
+	  });
+
+    keyDown("up",() => {
+    player.move(0, -MOVE_SPEED);
+	  });
+
+    keyDown("down",() => {
+    player.move(0, MOVE_SPEED);
+	  });
+   
+
+
+    function spawnStrawberry(){
+
+      const strawberry = add([
+          sprite("strawberry"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Strawberry appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "strawberry", // add a tag here
+        ]);
+
+    
+      wait(rand(0.5, 1.5), spawnStrawberry);
+
+    } //end of the spawnstrawberry function 
+
+      function spawnBlueberries(){
+
+      const Blueberries = add([
+          sprite("Blueberries"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Strawberry appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "Blueberries", // add a tag here
+        ]);
+
+    
+      wait(rand(2, 2.5), spawnBlueberries);
+
+    } //end of the spawnblueberry function
+
+     function spawnOlive(){
+
+      const Olive = add([
+          sprite("Olive"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Strawberry appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "Olive", // add a tag here
+        ]);
+
+    
+      wait(rand(3, 3.5), spawnOlive);
+
+    } //end of the spawnOlive function
+
+      function spawnGrapes(){
+
+      const Grapes = add([
+          sprite("Grapes"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Strawberry appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "Grapes", // add a tag here
+        ]);
+
+    
+      wait(rand(3, 3.5), spawnGrapes);
+
+    } //end of the spawnGrapes function
+
+
+      function spawnWatermelon(){
+
+      const Watermelon = add([
+          sprite("Watermelon"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Watermelon appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "Watermelon", // add a tag here
+        ]);
+
+    
+      wait(rand(5, 5.5), spawnWatermelon);
+
+    } //end of the spawnWatermelon function
+
+    function spawnBurger(){
+
+      const Burger = add([
+          sprite("Burger"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Watermelon appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "Burger", // add a tag here
+        ]);
+
+    
+      wait(rand(5, 5.5), spawnBurger);
+
+    } //end of the spawnBurger function
+
+    function spawnFries(){
+
+      const Fries = add([
+          sprite("Fries"),
+          area(),
+          pos(Math.floor(Math.random() * width()), -100),  //Watermelon appears at random X coordinate
+          origin("center"),
+          move(DOWN, 240),
+          scale(0.2),
+          "Fries", // add a tag here
+        ]);
+
+    
+      wait(rand(5, 5.5), spawnFries);
+
+    } //end of the spawnFries function
+
+    
+
+    // code that handles what to do if you collide with a strawberry
+    player.collides("strawberry", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score++; //adds 1 to the score variable
+      scorer.text = score
+
+      //if you've collected three starwberries
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "strawberry"
+    action("strawberry", (s) => {
+    // remove the strawberry if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+    
+
+  
+
+    // code that handles what to do if you collide with a Blueberries
+    player.collides("Blueberries", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score=score+2; //adds 2 to the score variable
+      scorer.text = score
+
+      //if you've collected three starwberries
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "Blueberries"
+    action("Blueberries", (s) => {
+    // remove the strawberry if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+    // code that handles what to do if you collide with an Olive
+    player.collides("Olive", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score=score+3; //adds 2 to the score variable
+      scorer.text = score
+
+      //if you've collected three starwberries
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "Blueberries"
+    action("Olive", (s) => {
+    // remove the strawberry if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+    // code that handles what to do if you collide with grapes
+    player.collides("Grapes", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score=score+2; //adds 2 to the score variable
+      scorer.text = score
+
+      //if you've collected three starwberries
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "Grapes"
+    action("Grapes", (s) => {
+    // remove the Grape if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+    // code that handles what to do if you collide with Watermelon
+    player.collides("Watermelon", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score=score+3; //adds 2 to the score variable
+      scorer.text = score
+
+      //if you've collected three Watermelon
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "Watermelon"
+    action("Watermelon", (s) => {
+    // remove the Grape if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+    // code that handles what to do if you collide with Watermelon
+    player.collides("Burger", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score=score-2; //minus 2 to the score variable
+      scorer.text = score
+
+      //if you've collected three Watermelon
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "Watermelon"
+    action("Burger", (s) => {
+    // remove the Grape if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+
+    // code that handles what to do if you collide with Fries
+    player.collides("Fries", (s) => {
+      addKaboom(player.pos); // add a kaboom! at the player position
+      play("score");    // plays a score sound
+      destroy(s);
+      score=score-2; //minus 2 to the score variable
+      scorer.text = score
+
+      //if you've collected three Watermelon
+      if (score > 30){
+        go("win", time);
+      }
+
+    });
+
+
+    // run this code every frame for all objects with tag "Fries"
+    action("Fries", (s) => {
+    // remove the Fries if it's out of the window
+    if (s.pos.y > height()) {
+      destroy(s);
+    }
+    
+    });
+
+    //causes the spawn sprites functions to execute (run)
+    spawnBlueberries();
+    spawnStrawberry();
+    spawnOlive();
+    spawnGrapes();
+    spawnBurger();
+    spawnFries();
+        
+}); // end of the main scene
+
+
+
+
+
+
+//End scene
+scene("win", (time) => {
+
+    //makes the time display in seconds.
+    time = time/60
+    time = time.toFixed(2);
+
+    //add a black background
+    const background = add([
+		rect(width(), height()),
+		color(45, 30, 35),
+		]);
+
+
+    //Add you win text
+    add([
+		text("You Win"),
+    pos(width()/2, height()/2),
+    origin("center"),
+	  ]);
+
+    //add time it took to collect 3 strawberrys
+    add([  
+		text("Time "+ time + " secs"),
+    pos(width()/2, height()/2+100),
+    origin("center"),
+	  ]);
+
+    keyPress(() => go("game"));
+
+
+}); // end of the win scene
+
+
+// this line tells Kaboom which scene to start with.
+go("game");
